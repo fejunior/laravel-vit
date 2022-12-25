@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TypeQuestionController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,6 +19,9 @@ use Inertia\Inertia;
 |
 */
 
+
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -22,6 +29,29 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+Route::prefix("manangement")->middleware("auth")->group(function (){
+    Route::get("/",[MenuController::class, 'management'])->name('management.index');
+
+    Route::prefix("user")->controller(UserController::class)->group(function (){
+        Route::get("/", 'index')->name("manangement.user.index");
+        Route::post("/{user}", 'store')->name("manangement.user.store");
+        Route::put("/{user}", 'update')->name("manangement.user.update");
+    });
+});
+
+
+Route::get('/test', function (){
+    return Inertia::render('MyPage');
+});
+
+Route::prefix('typeQuestion')->middleware('auth')
+->controller(TypeQuestionController::class) ->group(function () {
+    Route::get('/','index')->name('typequestion.index');
+    Route::post('/store','store')->name('typequestion.store');
+    Route::put('/{TypeQuestion}','update')->name('typequestion.update');
+    Route::delete('/{TypeQuestion}','delete')->name('typequestion.delete');
 });
 
 Route::middleware([
