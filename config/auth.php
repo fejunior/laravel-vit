@@ -64,7 +64,28 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'ldap' => [
+            'driver' => 'ldap',
+            'model' => LdapRecord\Models\ActiveDirectory\User::class,
+            'rules' => [],
+            'database' => [
+                'model' => App\Models\User::class,
+                'sync_passwords' => false,
+                'sync_attributes' => [
+                    'name' => 'cn',
+                    'email' => 'mail',
+                    'username' => 'samaccountname',
+                    'whencreated'=> 'whencreated',
+                    'whenchanged'=>'whenchanged',
+                    'memberof'=>'memberof',
+                ],
+                 'sync_existing' => [
+                'email' => 'mail',
+                ],
+                'password_column' => 'password',
 
+            ],
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
